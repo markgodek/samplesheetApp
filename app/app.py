@@ -11,6 +11,14 @@ def open_file_picker():
     if file_path:
         print(f'Selected file: {file_path}')
 
+def show_platemap_picker():
+    print(use_platemap.get())
+    if use_platemap.get() == 1:
+        plate_picker_button = Button(plate_picker_frame, text='Select Plate Map File', command=open_file_picker)
+        plate_picker_button.pack(pady=10,before=radio_frame)
+    else:
+        plate_picker_frame.pack_forget()
+
 def show_combobox():
     if sequencing_technology.get() == 1:
         combobox_frame.pack(pady=10,before=button_frame)
@@ -22,15 +30,18 @@ def show_combobox():
 banner = Label(master,text='Shalek Lab Samplesheet Maker')
 banner.pack()
 
-use_platemap = IntVar()
-Checkbutton(master,text='Use platemap to remove empty wells?',variable=use_platemap).pack()
+plate_picker_frame = Frame(master)
+plate_picker_frame.pack()
 
-tech_picker_label = Label(master,text='Select Sequencing Technology:')
-tech_picker_label.pack(pady=5)
+use_platemap = IntVar()
+Checkbutton(master,text='Use platemap to remove empty wells?',variable=use_platemap,command=show_platemap_picker).pack()
 
 # Create a frame for the radio buttons in the main frame
 radio_frame = Frame(master)
 radio_frame.pack(pady=5)
+
+tech_picker_label = Label(radio_frame,text='Select Sequencing Technology:')
+tech_picker_label.pack(pady=5)
 
 sequencing_technology = IntVar()
 Radiobutton(radio_frame, text='SS2', variable=sequencing_technology, value=1,command=show_combobox).pack(side=LEFT)
