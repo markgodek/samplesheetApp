@@ -6,6 +6,8 @@ import SamplesheetMaker
 appName = 'Samplesheet Maker'
 master = Tk()
 master.title(appName)
+icon = PhotoImage(file='icon.png')
+master.iconphoto(False,icon)
 
 class FilePickerButton(Button):
     def __init__(self, master=None, **kwargs):
@@ -34,7 +36,7 @@ def generate():
     #print(f'Input file: {input_file}')
     SamplesheetMaker.create_samplesheet(input_file)
 
-banner = Label(master, text='Shalek Lab Samplesheet Maker')
+banner = Label(master, text='NOTE: CURRENTLY ONLY WORKS FOR SS2')
 banner.pack()
 
 use_platemap = IntVar()
