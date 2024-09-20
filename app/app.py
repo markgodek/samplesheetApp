@@ -2,7 +2,7 @@ import sys, os
 from tkinter import *
 from tkinter import filedialog
 from tkinter import ttk
-from Samplesheetmaker import SamplesheetMaker
+from SamplesheetMaker import *
 
 # Function to determine the correct path
 def resource_path(relative_path):
@@ -49,7 +49,8 @@ def generate():
     else:
         print('No plate map!') # remove this eventually
     #print(f'Input file: {input_file}')
-    SamplesheetMaker.create_samplesheet(input_file)
+    #SamplesheetMaker.create_samplesheet(input_file)
+    create_samplesheet(input_file)
 
 banner = Label(master, text='NOTE: CURRENTLY ONLY WORKS FOR SS2')
 banner.pack()

@@ -20,7 +20,7 @@ def generateWells():
 
 # a function that takes a Row or Column index file name and a list of indices, constructs the path to the file, reads it, and appends the indices to list
 def indexReader(indexID,indices):
-    indexFile = resource_path('indicies') + '\\' + indexID + '.csv'
+    indexFile = resource_path('indices') + '\\' + indexID + '.csv'
 
     try:
         with open(indexFile) as file:
