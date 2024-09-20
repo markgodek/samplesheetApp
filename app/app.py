@@ -1,13 +1,28 @@
+import sys, os
 from tkinter import *
 from tkinter import filedialog
 from tkinter import ttk
-import SamplesheetMaker
+from Samplesheetmaker import SamplesheetMaker
+
+# Function to determine the correct path
+def resource_path(relative_path):
+    """ Get the absolute path to the resource, works for both development and PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 appName = 'Samplesheet Maker'
 master = Tk()
 master.title(appName)
-icon = PhotoImage(file='icon.png')
-master.iconphoto(False,icon)
+
+# Use resource_path to get the icon path
+icon_path = resource_path('icon.png')
+icon = PhotoImage(file=icon_path)
+master.iconphoto(False, icon)
 
 class FilePickerButton(Button):
     def __init__(self, master=None, **kwargs):

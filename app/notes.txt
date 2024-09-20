@@ -1,0 +1,8 @@
+added_files = [
+
+("indicies", "indicies")
+
+]
+
+pyinstaller --onefile --windowed --add-data "SamplesheetMaker/SamplesheetMaker.py;SamplesheetMaker.py" --add-data "indices;indices" --add-data "icon.png;." app.py
+
