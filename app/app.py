@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import ttk
+import SamplesheetMaker
 
 appName = 'Samplesheet Maker'
 master = Tk()
@@ -14,8 +15,8 @@ class FilePickerButton(Button):
 
     def open_file_picker(self):
         self.file_path = filedialog.askopenfilename()
-        if self.file_path:
-            print(f'Selected file: {self.file_path}')  # Print the stored file path
+        #if self.file_path:
+        #    print(f'Selected file: {self.file_path}')  # Print the stored file path
 
 def show_platemap_picker():
     if use_platemap.get() == 1:
@@ -23,13 +24,15 @@ def show_platemap_picker():
     else:
         plate_picker_button.pack_forget()
 
-def show_combobox():
-    if sequencing_technology.get() == 1:
-        combobox_frame.pack(pady=10, before=button_frame)
-        r_index_picker.pack(pady=10)
-        c_index_picker.pack(pady=10)
+def generate():
+    input_file = file_picker_button.file_path
+    if plate_picker_button.file_path:
+        # remove the wells based on the plate map using another script
+        print('removing wells based on plate map')
     else:
-        combobox_frame.pack_forget()
+        print('No plate map!') # remove this eventually
+    #print(f'Input file: {input_file}')
+    SamplesheetMaker.create_samplesheet(input_file)
 
 banner = Label(master, text='Shalek Lab Samplesheet Maker')
 banner.pack()
@@ -49,25 +52,15 @@ tech_picker_label = Label(radio_frame, text='Select Sequencing Technology:')
 tech_picker_label.pack(pady=5)
 
 sequencing_technology = IntVar()
-Radiobutton(radio_frame, text='SS2', variable=sequencing_technology, value=1, command=show_combobox).pack(side=LEFT)
-Radiobutton(radio_frame, text='HIVES', variable=sequencing_technology, value=2, command=show_combobox).pack(side=RIGHT)
+Radiobutton(radio_frame, text='SS2', variable=sequencing_technology, value=1).pack(side=LEFT)
+Radiobutton(radio_frame, text='HIVES', variable=sequencing_technology, value=2).pack(side=RIGHT)
 
-combobox_frame = Frame(master)
-
-# Define the Combobox
-r_index_picker = ttk.Combobox(combobox_frame)
-r_index_picker['values'] = ['R1', 'R2', 'R3', 'R4', 'R5']
-r_index_picker.set('Select an R index')  # Set a default prompt
-
-c_index_picker = ttk.Combobox(combobox_frame)
-c_index_picker['values'] = ['C1', 'C2', 'C3', 'C4', 'C5']
-c_index_picker.set('Select a C index')  # Set a default prompt
 
 button_frame = Frame(master)
 
-filePickerButton = FilePickerButton(button_frame, text='Select File')
-filePickerButton.pack(pady=10)
-generate_button = Button(button_frame, text='Generate', command=master.destroy)
+file_picker_button = FilePickerButton(button_frame, text='Select Input File')
+file_picker_button.pack(pady=10)
+generate_button = Button(button_frame, text='Generate', command=generate)
 generate_button.pack(pady=10)
 button_frame.pack()
 

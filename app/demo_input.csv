@@ -1,0 +1,15 @@
+IEMFileVersion,4,,,
+Investigator Name,Mike Vilme,,,
+Run_ID,Run_1399,,,
+Date,8/26/2024,,,
+Workflow,GenerateFASTQ,,,
+Application,NextSeq FASTQ Only,,,
+Assay,Nextera XT,,,
+Description,Run 1399 for Monika,,,
+Chemistry,Amplicon,,,
+Read 1 length,30,,,
+Read 2 length,8,,,
+Adapter,ACTCTGAGGC,,,
+Plate ID(s),M72SS2017,M72SS2027,M72SS2033,M72SS2034
+I7 Index ID,R2,R5,R4,R5
+I5 Index ID,C5,C4,C2,C3
