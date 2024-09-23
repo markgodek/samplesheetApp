@@ -3,9 +3,13 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter import ttk
 import SamplesheetMaker
-print(dir(SamplesheetMaker)) #temp - delete me
+import EmptyWellFinder
 
 #TODO - add functionality for SeqWell/HIVES and functionality to read Monika's platemaps and omit the empty wells from the samplesheet.
+
+# take the path to a platemap file and returns an object that contains the empty wells organized by plate
+def get_empty_wells(path):
+    return EmptyWellFinder.get_empty_wells(path)
 
 # Function to determine the correct path
 def resource_path(relative_path):
