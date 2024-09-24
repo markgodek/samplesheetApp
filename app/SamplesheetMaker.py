@@ -19,7 +19,7 @@ def generateWells():
     return wells
 
 # a function that takes a Row or Column index file name and a list of indices, constructs the path to the file, reads it, and appends the indices to list
-def indexReader(indexID,indices):
+def ss2IndexReader(indexID, indices):
     indexFile = resource_path('indices') + '\\' + indexID + '.csv'
 
     try:
@@ -33,7 +33,7 @@ def indexReader(indexID,indices):
         print('\nERROR: ', indexFile, ' not found. Please correct the information sheet you input.')
         exit()
 
-def create_samplesheet(inputFile):
+def create_samplesheet(inputFile,sequencing_technology):
         with open(inputFile, 'r') as runInfo:
                 infoReader = csv.reader(runInfo, delimiter=',', quoting=csv.QUOTE_NONE)
 
@@ -62,9 +62,9 @@ def create_samplesheet(inputFile):
                         else:
                                 info[row[0]] = row[1]
                 for idFile in i7ID:
-                        i7Indices = indexReader(idFile, i7Indices)
+                        i7Indices = ss2IndexReader(idFile, i7Indices)
                 for idFile in i5ID:
-                        i5Indices = indexReader(idFile, i5Indices)
+                        i5Indices = ss2IndexReader(idFile, i5Indices)
 
                 # get how many columns the csv file is, there could be several plates, indice files, etc. and use that to remove commas from description so it prints nice
                 csvColumnCount = max(len(i7ID), len(i5ID), len(plateIDs))

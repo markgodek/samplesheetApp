@@ -21,10 +21,6 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 def update_ui():
-    # any time the UI is updated, wipe the file pickers
-    file_picker_button.file_path = None
-    plate_picker_button.file_path = None
-
     # Show or hide check_frame based on sequencing technology
     if sequencing_technology.get() == 'SS2':
         check_frame.pack(pady=5,before=button_frame)
@@ -38,11 +34,7 @@ def update_ui():
         plate_map_frame.pack_forget()
 
 def generate():
-    input_file_path = file_picker_button.file_path
-    plate_file_path = plate_picker_button.file_path
-    tech = sequencing_technology.get()
-
-    print(input_file_path, plate_file_path, tech)
+    pass
 
 # Create all the frame we will use
 master = Tk()

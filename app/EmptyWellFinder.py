@@ -69,4 +69,4 @@ base_path = base_path = os.path.abspath(".")
 path = os.path.join(base_path, 'full_platemap.xlsx')
 #path = os.path.join(base_path, 'demo_platemap.xlsx')
 
-main(path)
+#main(path)
