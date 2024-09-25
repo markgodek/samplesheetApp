@@ -46,6 +46,7 @@ def generate():
     tech = sequencing_technology.get()
 
     SamplesheetMaker.tech_parser(input_file_path, tech, plate_file_path)
+    #SamplesheetMaker.tech_parser('C:/Users/markg/SheetApp/app/demo_input.csv', 'SS2', 'C:/Users/markg/SheetApp/app/demo_platemap.xlsx')
 
 # create the main window
 master = Tk()

@@ -25,7 +25,7 @@ def ss2InputFileParser(input_file_path):
         with open(input_file_path) as file:
             indices = {}
             info = {}
-
+            #TODO - this code must be modified to break the input into the info and indices
             reader = csv.reader(file)
             for row in reader:
                 if row and row[0]:  # Ensure the row is not empty and has a valid key
@@ -40,6 +40,8 @@ def ss2InputFileParser(input_file_path):
             plate_ids = info['Plate ID(s)']
             i5_indices = info['I5 Index ID']
             i7_indices = info['I7 Index ID']
+
+            print(plate_ids)
 
             # Populate the indices dictionary
             for i, plate_id in enumerate(plate_ids):
@@ -100,9 +102,44 @@ def ss2WellIndexGetter(indexID, empty_wells=None):
 def create_samplesheet(input_file_path, header, info, final_indices):
     inputDir = Path(input_file_path).parent
     outFileName = str(inputDir) + '\\' + info['Run_ID'] + '_samplesheet.csv'
-    print(outFileName)
-    #print(info)
-    pass
+
+    with open(outFileName, mode='w', newline='') as outfile:
+        writer = csv.writer(outfile)
+
+        # Write the header
+        for row in header:
+            writer.writerow(row)
+
+        # Write the data section
+        for plate, indices in final_indices.items():
+            # We assume that each plate may have both i7 and i5 wells
+            i7_wells = indices['i7']
+            i5_wells = indices['i5']
+
+            # Create a dictionary to map well to i5 and i7 indices
+            well_map = {well[0]: {'i7': well[1], 'i5': None} for well in i7_wells}
+
+            # Update with i5 indices
+            for well in i5_wells:
+                well_map[well[0]]['i5'] = well[1]
+
+            # Write data for each well
+            for well, data in well_map.items():
+                # Only write the well if there is an i7 index
+                if data['i7'] is not None:
+                    writer.writerow([
+                        info.get('Sample_ID', ''),
+                        info.get('Sample_Name', ''),
+                        plate,
+                        well,
+                        info.get('I7_Index_ID', data['i7']),
+                        data['i7'],
+                        info.get('I5_Index_ID', data['i5']),
+                        data['i5'],
+                        info.get('Sample_Project', '')
+                    ])
+
+    #print(f'Samplesheet written to: {outFileName}')
 
 
 # receives outputs from generate button in main app and processes them based on
