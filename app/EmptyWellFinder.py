@@ -1,4 +1,4 @@
-import openpyxl, os
+import openpyxl
 
 def get_plates(sheet):
     max_row = sheet.max_row
@@ -36,7 +36,7 @@ def get_plates(sheet):
     return plates
 
 # input a openpyxl sheet and return a dictionary with ID as keys and a list of empty or water wells
-def get_empty_wells(plate):
+def process_plate(plate):
     row_names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     row_index = 0
     empty_wells = []
@@ -53,7 +53,7 @@ def get_empty_wells(plate):
                 empty_wells.append(row_names[row_index - 1] + str(col_index))
     return empty_wells
 
-def main(path):
+def get_empty_wells(path):
     # Select the active worksheet and get the plate maps within
     empty_wells = {}
     workbook = openpyxl.load_workbook(path)
@@ -61,12 +61,6 @@ def main(path):
     plates = get_plates(sheet)
 
     for ID, plate in plates.items():
-        empty_wells[ID] = get_empty_wells(plate)
+        empty_wells[ID] = process_plate(plate)
 
     return empty_wells
-
-base_path = base_path = os.path.abspath(".")
-path = os.path.join(base_path, 'full_platemap.xlsx')
-#path = os.path.join(base_path, 'demo_platemap.xlsx')
-
-#main(path)

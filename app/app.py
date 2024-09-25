@@ -1,6 +1,8 @@
 import sys, os
 from tkinter import *
 from tkinter import filedialog
+import SamplesheetMaker
+from ResourcePath import resource_path
 
 appName = 'Samplesheet Maker'
 
@@ -13,12 +15,13 @@ class FilePickerButton(Button):
     def open_file_picker(self):
         self.file_path = filedialog.askopenfilename()
 
-def resource_path(relative_path):
+def load_icon():
+    icon_path = resource_path('icon.png')
     try:
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-    return os.path.join(base_path, relative_path)
+        icon = PhotoImage(file=icon_path)
+        master.iconphoto(False, icon)
+    except Exception as e:
+        print(f"Error loading icon: {e}")
 
 def update_ui():
     # any time the UI is updated, wipe the file pickers
@@ -38,24 +41,27 @@ def update_ui():
         plate_map_frame.pack_forget()
 
 def generate():
-    input_file_path = file_picker_button.file_path
-    plate_file_path = plate_picker_button.file_path
-    tech = sequencing_technology.get()
+    if True: # for debugging
+        SamplesheetMaker.create_samplesheet('C:/Users/markg/SheetApp/app/demo_input.csv','SS2','C:/Users/markg/SheetApp/app/demo_platemap.xlsx')
+    else:
+        input_file_path = file_picker_button.file_path
+        plate_file_path = plate_picker_button.file_path
+        tech = sequencing_technology.get()
 
-    print(input_file_path, plate_file_path, tech)
+        SamplesheetMaker.create_samplesheet(input_file_path, tech, plate_file_path)
+
+# create the main window
+master = Tk()
+master.title(appName)
+
+# Load the icon before any UI setup
+load_icon()
 
 # Create all the frame we will use
-master = Tk()
 radio_frame = Frame(master)
 check_frame = Frame(master)
 plate_map_frame = Frame(check_frame)
 button_frame = Frame(master)
-
-# Configure the app
-master.title(appName)
-icon_path = resource_path('icon.png')
-icon = PhotoImage(file=icon_path)
-master.iconphoto(False, icon)
 
 sequencing_technology = StringVar(value='SS2')
 use_platemap = BooleanVar(value=True)
@@ -91,5 +97,7 @@ button_frame.pack()
 # Call update_ui once at the beginning to set the initial state
 update_ui()
 
-# Keep the app open
-master.mainloop()
+# prevent importing functions to other scripts from running app.py
+if __name__ == "__main__":
+    # Keep the app open
+    master.mainloop()
