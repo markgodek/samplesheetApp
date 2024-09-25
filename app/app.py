@@ -41,14 +41,11 @@ def update_ui():
         plate_map_frame.pack_forget()
 
 def generate():
-    if True: # for debugging
-        SamplesheetMaker.create_samplesheet('C:/Users/markg/SheetApp/app/demo_input.csv','SS2','C:/Users/markg/SheetApp/app/demo_platemap.xlsx')
-    else:
-        input_file_path = file_picker_button.file_path
-        plate_file_path = plate_picker_button.file_path
-        tech = sequencing_technology.get()
+    input_file_path = file_picker_button.file_path
+    plate_file_path = plate_picker_button.file_path
+    tech = sequencing_technology.get()
 
-        SamplesheetMaker.create_samplesheet(input_file_path, tech, plate_file_path)
+    SamplesheetMaker.tech_parser(input_file_path, tech, plate_file_path)
 
 # create the main window
 master = Tk()
@@ -75,7 +72,7 @@ tech_picker_label.grid(row=0, column=0, columnspan=3, pady=5)
 # Updated command to call update_ui
 Radiobutton(radio_frame, text='SS2', variable=sequencing_technology, value='SS2', command=update_ui).grid(row=1, column=0, padx=5)
 Radiobutton(radio_frame, text='SeqWell', variable=sequencing_technology, value='SeqWell', command=update_ui).grid(row=1, column=1, padx=5)
-Radiobutton(radio_frame, text='HIVES', variable=sequencing_technology, value='HIVES', command=update_ui).grid(row=1, column=2, padx=5)
+#Radiobutton(radio_frame, text='HIVES', variable=sequencing_technology, value='HIVES', command=update_ui).grid(row=1, column=2, padx=5)
 
 Checkbutton(check_frame, text='Use platemap to remove empty wells?', variable=use_platemap, command=update_ui).pack()
 

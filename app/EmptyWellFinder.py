@@ -35,7 +35,7 @@ def get_plates(sheet):
             plates[ID] = new_chunk
     return plates
 
-# input a openpyxl sheet and return a dictionary with ID as keys and a list of empty or water wells
+# input an openpyxl sheet and return a dictionary with ID as keys and a list of empty or water wells
 def process_plate(plate):
     row_names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     row_index = 0
