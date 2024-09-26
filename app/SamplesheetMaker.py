@@ -101,8 +101,9 @@ def create_samplesheet(input_file_path, header, info, indices,plate_file_path=No
     outFileName = str(inputDir) + '\\' + info['Run_ID'] + '_samplesheet.csv'
 
     empty_wells = EmptyWellFinder.get_empty_wells(plate_file_path)
+    well_counter = 1    # samples are named based relative to run, not plate
 
-    with open(outFileName, mode='w', newline='') as outfile:
+    with (open(outFileName, mode='w', newline='') as outfile):
         writer = csv.writer(outfile)
 
         # Write the header
@@ -125,10 +126,10 @@ def create_samplesheet(input_file_path, header, info, indices,plate_file_path=No
                 well = plate_i7_indices[i][0]
                 i7_index = plate_i7_indices[i][1]
                 i5_index = plate_i5_indices[i][1]
-                outstring = 'sample' + str(i + 1), str(
-                    plate + '_' + str(well)), plate, well, i7_index_ID, i7_index, i5_index_ID, i5_index, info['Run_ID']
+                outstring = 'sample' + str(well_counter), str(plate + '_' + str(well)), \
+                plate, well, i7_index_ID, i7_index, i5_index_ID, i5_index, info['Run_ID']
                 writer.writerow(outstring)
-
+                well_counter += 1
 
 # receives outputs from generate button in main app and processes them based on
 # which sequencing technology was selected
