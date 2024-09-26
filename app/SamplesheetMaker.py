@@ -23,31 +23,25 @@ def generateWells():
 def ss2InputFileParser(input_file_path):
     try:
         with open(input_file_path) as file:
-            indices = {}
+            index_IDs = {}
             info = {}
-            #TODO - this code must be modified to break the input into the info and indices
-            reader = csv.reader(file)
-            for row in reader:
-                if row and row[0]:  # Ensure the row is not empty and has a valid key
-                    non_empty_values = [value for value in row[1:] if value]  # Filter out empty strings
 
-                    # Store directly if there's only one non-empty value
-                    if len(non_empty_values) == 1:
-                        info[row[0]] = non_empty_values[0]
-                    else:
-                        info[row[0]] = non_empty_values  # Store as list if multiple values
+            reader = csv.reader(file)
+            for i, row in enumerate(reader):
+                if i < 12:
+                    info[row[0]] = row[1]
+                else:
+                    info[row[0]] = row[1:]
 
             plate_ids = info['Plate ID(s)']
-            i5_indices = info['I5 Index ID']
-            i7_indices = info['I7 Index ID']
-
-            print(plate_ids)
+            i5_index_IDs = info['I5 Index ID']
+            i7_index_IDs = info['I7 Index ID']
 
             # Populate the indices dictionary
             for i, plate_id in enumerate(plate_ids):
-                indices[plate_id] = {
-                    'i5': i5_indices[i],
-                    'i7': i7_indices[i]
+                index_IDs[plate_id] = {
+                    'i5': i5_index_IDs[i],
+                    'i7': i7_index_IDs[i]
                 }
 
             # "Sample_ID", "index", and "index2" are mandatory column names otherwise BCL2FASTQ will not run
@@ -70,7 +64,7 @@ def ss2InputFileParser(input_file_path):
                       ['Sample_ID', 'Sample_Name', 'Sample_Plate', 'Sample_Well', 'I7_Index_ID', 'index',
                        'I5_Index_ID', 'index2', 'Sample_Project']]
 
-        return header, info, indices
+        return header, info, index_IDs
     except FileNotFoundError:
         print('\nERROR: ', input_file_path, ' not found. Please correct the information sheet you input.')
         exit()
@@ -99,9 +93,12 @@ def ss2WellIndexGetter(indexID, empty_wells=None):
 
 
 # function which write the samplesheet to file
-def create_samplesheet(input_file_path, header, info, final_indices):
+def create_samplesheet(input_file_path, header, info, indices,plate_file_path=None):
     inputDir = Path(input_file_path).parent
     outFileName = str(inputDir) + '\\' + info['Run_ID'] + '_samplesheet.csv'
+
+    if plate_file_path:
+        empty_wells = EmptyWellFinder.get_empty_wells(plate_file_path)
 
     with open(outFileName, mode='w', newline='') as outfile:
         writer = csv.writer(outfile)
@@ -110,36 +107,25 @@ def create_samplesheet(input_file_path, header, info, final_indices):
         for row in header:
             writer.writerow(row)
 
-        # Write the data section
-        for plate, indices in final_indices.items():
-            # We assume that each plate may have both i7 and i5 wells
-            i7_wells = indices['i7']
-            i5_wells = indices['i5']
+        # Write the data
+        for plate, values in indices.items():
+            if plate in empty_wells.keys():  # pass the empty wells if a plate has them
+                plate_empty_wells = empty_wells[plate]
+            else:
+                plate_empty_wells = None  # Initialize to None if no empty wells
 
-            # Create a dictionary to map well to i5 and i7 indices
-            well_map = {well[0]: {'i7': well[1], 'i5': None} for well in i7_wells}
+            i7_index_ID = values['i7']
+            i5_index_ID = values['i5']
 
-            # Update with i5 indices
-            for well in i5_wells:
-                well_map[well[0]]['i5'] = well[1]
-
-            # Write data for each well
-            for well, data in well_map.items():
-                # Only write the well if there is an i7 index
-                if data['i7'] is not None:
-                    writer.writerow([
-                        info.get('Sample_ID', ''),
-                        info.get('Sample_Name', ''),
-                        plate,
-                        well,
-                        info.get('I7_Index_ID', data['i7']),
-                        data['i7'],
-                        info.get('I5_Index_ID', data['i5']),
-                        data['i5'],
-                        info.get('Sample_Project', '')
-                    ])
-
-    #print(f'Samplesheet written to: {outFileName}')
+            plate_i7_indices = ss2WellIndexGetter(i7_index_ID, plate_empty_wells)
+            plate_i5_indices = ss2WellIndexGetter(i5_index_ID, plate_empty_wells)
+            for i in range(0, len(plate_i7_indices)):
+                well = plate_i7_indices[i][0]
+                i7_index = plate_i7_indices[i][1]
+                i5_index = plate_i5_indices[i][1]
+                outstring = 'sample' + str(i + 1), str(
+                    plate + '_' + str(well)), plate, well, i7_index_ID, i7_index, i5_index_ID, i5_index, info['Run_ID']
+                writer.writerow(outstring)
 
 
 # receives outputs from generate button in main app and processes them based on
@@ -147,27 +133,8 @@ def create_samplesheet(input_file_path, header, info, final_indices):
 def tech_parser(input_file_path, tech, plate_file_path=None):
     if tech == 'SS2':
         if tech == 'SS2':
-            plate_empty_wells = None
-            final_indices = {}
-            empty_wells = EmptyWellFinder.get_empty_wells(plate_file_path)
             header, info, indices = ss2InputFileParser(input_file_path)
-
-            for plate, values in indices.items():
-                if plate in empty_wells.keys():  # pass the empty wells if a plate has them
-                    plate_empty_wells = empty_wells[plate]
-                else:
-                    plate_empty_wells = None  # Initialize to None if no empty wells
-
-                i7_value = values['i7']
-                i5_value = values['i5']
-
-                # Initialize the plate in final_indices if it doesn't exist
-                if plate not in final_indices:
-                    final_indices[plate] = {}
-
-                final_indices[plate]['i7'] = ss2WellIndexGetter(i7_value, plate_empty_wells)
-                final_indices[plate]['i5'] = ss2WellIndexGetter(i5_value, plate_empty_wells)
-            create_samplesheet(input_file_path, header, info, final_indices)
+            create_samplesheet(input_file_path, header, info, indices, plate_file_path)
 
     if tech == 'SeqWell':
         pass
@@ -179,6 +146,5 @@ def tech_parser(input_file_path, tech, plate_file_path=None):
     pass
 
 
-#tech_parser('C:/Users/markg/SheetApp/app/demo_input.csv', 'SS2', 'C:/Users/markg/SheetApp/app/demo_platemap.xlsx')
-tech_parser('C:/Users/markg/SheetApp/app/demo_files/full_input.csv', 'SS2',
-            'C:/Users/markg/SheetApp/app/demo_files/full_platemap.xlsx')
+tech_parser('C:/Users/markg/SheetApp/app/demo_input.csv', 'SS2', 'C:/Users/markg/SheetApp/app/demo_platemap.xlsx')
+#tech_parser('C:/Users/markg/SheetApp/app/demo_files/full_input.csv', 'SS2','C:/Users/markg/SheetApp/app/demo_files/full_platemap.xlsx')
