@@ -83,7 +83,10 @@ def ss2WellIndexGetter(indexID, empty_wells=None):
             next(indexIterator)  # first row is the header, skip it
             for i, row in enumerate(indexIterator):
                 well = wells[i]
-                if well not in empty_wells:
+                if empty_wells: # if there are empty wells, look at them
+                    if well not in empty_wells:
+                        outList.append([well, row[1]])
+                else: # if there are no empty wells, add everything
                     outList.append([well, row[1]])
         return outList
 
@@ -97,8 +100,7 @@ def create_samplesheet(input_file_path, header, info, indices,plate_file_path=No
     inputDir = Path(input_file_path).parent
     outFileName = str(inputDir) + '\\' + info['Run_ID'] + '_samplesheet.csv'
 
-    if plate_file_path:
-        empty_wells = EmptyWellFinder.get_empty_wells(plate_file_path)
+    empty_wells = EmptyWellFinder.get_empty_wells(plate_file_path)
 
     with open(outFileName, mode='w', newline='') as outfile:
         writer = csv.writer(outfile)
@@ -109,7 +111,7 @@ def create_samplesheet(input_file_path, header, info, indices,plate_file_path=No
 
         # Write the data
         for plate, values in indices.items():
-            if plate in empty_wells.keys():  # pass the empty wells if a plate has them
+            if empty_wells and plate in empty_wells.keys():  # pass the empty wells if a plate has them
                 plate_empty_wells = empty_wells[plate]
             else:
                 plate_empty_wells = None  # Initialize to None if no empty wells
@@ -143,8 +145,6 @@ def tech_parser(input_file_path, tech, plate_file_path=None):
         pass
         #HIVES stuff
 
-    pass
-
-
-tech_parser('C:/Users/markg/SheetApp/app/demo_input.csv', 'SS2', 'C:/Users/markg/SheetApp/app/demo_platemap.xlsx')
+#tech_parser('C:/Users/markg/SheetApp/app/demo_input.csv', 'SS2', 'C:/Users/markg/SheetApp/app/demo_platemap.xlsx')
 #tech_parser('C:/Users/markg/SheetApp/app/demo_files/full_input.csv', 'SS2','C:/Users/markg/SheetApp/app/demo_files/full_platemap.xlsx')
+#tech_parser('C:/Users/markg/SheetApp/app/demo_input.csv', 'SS2')
