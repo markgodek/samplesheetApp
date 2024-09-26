@@ -2,10 +2,9 @@ import sys
 import os
 from tkinter import *
 from tkinter import filedialog
+from tkinter import font
 import SamplesheetMaker
 from ResourcePath import resource_path
-
-appName = 'Samplesheet Maker'
 
 class FilePickerButton(Button):
     def __init__(self, master=None, **kwargs):
@@ -66,6 +65,8 @@ def generate():
 
 # Create the main window
 master = Tk()
+appName = 'Samplesheet Maker'
+font_style = font.Font(size=12)
 master.title(appName)
 
 # Load the icon before any UI setup
@@ -81,7 +82,7 @@ sequencing_technology = StringVar(value='SS2')
 use_platemap = BooleanVar(value=True)
 
 # Put elements in the frames
-banner = Label(master, text='NOTE: CURRENTLY ONLY WORKS FOR SS2')
+banner = Label(master, text='Shalek Lab Samplesheet Maker', padx=10, pady=10, font=font_style)
 input_file_banner = Label(button_frame, text='', wraplength=400)  # Add wrap length for long paths
 plate_map_banner = Label(plate_map_frame, text='', wraplength=400)
 

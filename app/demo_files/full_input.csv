@@ -1,6 +1,6 @@
 IEMFileVersion,4,,,,
 Investigator Name,Mike Vilme,,,,
-Run_ID,Run_test,,,,
+Run_ID,Run_test_full,,,,
 Date,8/26/2024,,,,
 Workflow,GenerateFASTQ,,,,
 Application,NextSeq FASTQ Only,,,,
