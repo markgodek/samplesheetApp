@@ -6,3 +6,5 @@ pyinstaller --onefile --windowed --add-data "SamplesheetMaker.py;SamplesheetMake
 
 
 pyinstaller --onefile --add-data "SamplesheetMaker.py;SamplesheetMaker.py" --add-data "indices;indices" --add-data "icon.png;." -i "icon.ico" app.py
+
+pyinstaller app.spec

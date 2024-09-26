@@ -5,7 +5,7 @@ a = Analysis(
     ['app.py'],
     pathex=[],
     binaries=[],
-    datas=[('SamplesheetMaker.py', 'SamplesheetMaker.py'), ('indices', 'indices'), ('icon.png', '.')],
+    datas=[('SamplesheetMaker.py', 'SamplesheetMaker.py'), ('ResourcePath.py', 'ResourcePath.py'), ('EmptyWellFinder.py', 'EmptyWellFinder.py'), ('indices', 'indices'), ('icon.png', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
