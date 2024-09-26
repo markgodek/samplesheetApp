@@ -8,7 +8,7 @@ def get_plates(sheet):
 
     plates = {}
     empty_row_counter = 0
-    new_chunk = openpyxl.Workbook().create_sheet()
+    new_plate = openpyxl.Workbook().create_sheet()
 
     # Delete columns N (14) and beyond
     if sheet.max_column >= 14:  # Check if there are any columns to delete
@@ -20,20 +20,20 @@ def get_plates(sheet):
         # store the plate ID when we find it
         if row[0] == 'Plate ID:':
             ID = row[1]
-        # after seeing the 2 rows we don't want between the metadata and table, add rows to the chunk
+        # after seeing the 2 rows we don't want between the metadata and table, add rows to the plate
         if empty_row_counter == 2 and row[0] is not None:
-            new_chunk.append(row[1:len(row)])
-        # if we've seen 4 empty rows, the chunk is finished
-        # store the chunk in the dict under its ID and initialize the next chunk
+            new_plate.append(row[1:len(row)])
+        # if we've seen 4 empty rows, the plate is finished
+        # store the plate in the dict under its ID and initialize the next plate
         if empty_row_counter == 4:
-            plates[ID] = new_chunk
-            new_chunk = openpyxl.Workbook().create_sheet()  # reset chunk to return
+            plates[ID] = new_plate
+            new_plate = openpyxl.Workbook().create_sheet()  # reset plate to return
             empty_row_counter = 0
         if row[0] is None:
             empty_row_counter += 1
-        # Store the last chunk after iterating over all the rows
+        # Store the last plate after iterating over all the rows
         if row_index == max_row:
-            plates[ID] = new_chunk
+            plates[ID] = new_plate
     return plates
 
 
